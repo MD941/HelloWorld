@@ -1,22 +1,26 @@
 package org.example;
 
+import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
 
-        int tajniBroj = 5;
         Scanner scanner = new Scanner(System.in);
+
         int korisnikovInput;
-        do {
-            System.out.println("Pogodite tajni broj između 1 do 10");
+        int zbroj = 0;
+
+        System.out.println("Unesi broj dok ne pogodiš");
+        korisnikovInput = scanner.nextInt();
+
+        while (korisnikovInput != 0) {
+            zbroj = zbroj + korisnikovInput;
+
+            System.out.println("Pokusaj ponovo");
             korisnikovInput = scanner.nextInt();
 
-            if (tajniBroj == korisnikovInput) {
-                System.out.println("Pogodili ste tajni broj!");
-            } else {
-                System.out.println("Nažalost nije točno, pokušajte ponovo!");
-            }
-        } while (tajniBroj != korisnikovInput);
+        }
+        System.out.println("Zbroj je " + zbroj);
     }
 }
