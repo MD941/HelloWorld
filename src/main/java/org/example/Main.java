@@ -7,34 +7,24 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Unesite broj: ");
+        System.out.println("Unesite zeljenu velicinu liste: ");
         Scanner scanner = new Scanner(System.in);
-        int trazeniBroj = scanner.nextInt();
-
-        List<Integer> listaBrojeva = new ArrayList<>(trazeniBroj);
-//        2 4 5 6 5
-        for (int i = 0; i < trazeniBroj; i++) {
+        int velicinaListe = scanner.nextInt();
+        List<Integer> listaBrojeva = new ArrayList<>(velicinaListe);
+        System.out.println("Unesite listu sljedece velicine: " + velicinaListe);
+        for (int i = 0; i < velicinaListe; i++) {
             listaBrojeva.add(scanner.nextInt());
         }
-//2-4       5-6
-//          5-5      6-5
-//
-//2-5
-//2-6
-//2-5
-//
-//4-5
-//4-6
-//4-6
-        for (int j = 0; j < listaBrojeva.size(); j++) {
-            int brojKojiProvjeravamo = listaBrojeva.get(j);
+        izracunaj(listaBrojeva);
+        System.out.println(izracunaj(listaBrojeva) ? "Lista je uzlazno sortirana" : "Lista nije uzlazno sortirana");
+    }
 
-            for (int z = j + 1; z < listaBrojeva.size() - 1; z++) {
-                int broj = listaBrojeva.get(z);
-                boolean isIt = brojKojiProvjeravamo ==  broj;
+    public static Boolean izracunaj(List<Integer> lista) {
+        for (int i = 0; i < lista.size() - 1; i++) {
+            if (lista.get(i) > lista.get(i + 1)) {
+                return false;
             }
-
-
         }
+        return true;
     }
 }
