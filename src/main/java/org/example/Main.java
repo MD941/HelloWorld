@@ -1,18 +1,37 @@
 package org.example;
 
 
+import java.math.BigDecimal;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Upišite za koliko proizvoda želite izračunati popust: ");
+        int brojObjekata = scanner.nextInt();
 
-            Polaznik polaznik1 = new Polaznik("Ivo", "Ivić");
-            System.out.println(polaznik1.getIme() + " " + polaznik1.getPrezime());
-
-            Polaznik polaznik2 = new Polaznik("Petar", "Perić", 25, "M");
-            polaznik2.setDob(30);
-
-            Polaznik polaznik3 = new Polaznik();
-            polaznik3.setIme("Marko");
-            polaznik3.setPrezime("Markić");
+        for (int i = 0; i < brojObjekata; i++) {
+            izracunajPopust();
         }
     }
+
+    public static void izracunajPopust() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Upišite naziv proizvoda");
+        String nazivProizvoda = scanner.nextLine();
+
+        System.out.println("Upišite cijenu proizvoda");
+        BigDecimal cijenaProizvoda = scanner.nextBigDecimal();
+
+        System.out.println("Upišite popust proizvoda");
+        BigDecimal popustProizvoda = scanner.nextBigDecimal();
+
+        Proizvod proizvod = new Proizvod(nazivProizvoda, cijenaProizvoda);
+
+        proizvod.postaviPopust(popustProizvoda);
+        System.out.println("Cijena proizvoda nakon popusta je " + proizvod.izracunajCijenu());
+    }
+
+
+
+}
