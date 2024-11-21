@@ -1,35 +1,43 @@
 package org.example;
 
 
-import java.io.*;
+import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NameOrSurnameException, PaycheckException {
 
-        Student student1 = new Student("Ivan", "Horvat", "23232133");
-        Student student2 = new Student("Matija", "Lukec", "23232132");
-        Student student3 = new Student("Ivan", "Kukec", "232321311");
+        System.out.println("Unesite podatke za 3 zaposlenika: (Ime, prezime i plaća)");
 
+        Scanner scanner;
+        Tvrtka tvrtka = new Tvrtka("Salvus");
+        String ime = "";
+        String prezime = "";
+        double placa;
+        for (int i = 0; i < 3; i++) {
+            scanner = new Scanner(System.in);
+            System.out.print("Ime: ");
+            ime = scanner.nextLine();
+            if (ime == null || ime.isEmpty()) {
+                throw new NameOrSurnameException("Ime ne može biti prazno");
+            }
 
-        try (PrintWriter out = new PrintWriter("studenti.txt")) {
-            out.println(student1.getIme() + " " + student1.getPrezime() + " " + student1.getBrIndexa());
-            out.println(student2.getIme() + " " + student2.getPrezime() + " " + student2.getBrIndexa());
-            out.println(student3.getIme() + " " + student3.getPrezime() + " " + student3.getBrIndexa());
-
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
+            System.out.print("Prezime: ");
+            prezime = scanner.nextLine();
+            if (prezime == null || prezime.isEmpty()) {
+                throw new NameOrSurnameException("Prezime ne može biti prazno");
+            }
+            System.out.print("Plaća: ");
+            placa = scanner.nextDouble();
+            if (placa == 0 || placa < 0) {
+                throw new PaycheckException("Place ne moze biti 0 ili manje od 0");
+            }
+            Zaposlenik zaposlenik = new Zaposlenik(ime, prezime, placa);
+            tvrtka.dodajZaposlenika(zaposlenik);
         }
 
-        int c = 0;
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("studenti.txt"))) {
-            while (bufferedReader.read() != -1) {
-                c++;
-            };
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
-        ;
-        System.out.println(c);
+        tvrtka.ispisiZaposlenike();
+        tvrtka.pronadjiNajvecuPlacu();
+
     }
 }
 
