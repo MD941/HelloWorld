@@ -1,68 +1,46 @@
 package org.example;
 
 
-import org.example.model.Clan;
-import org.example.model.Knjiga;
-import org.example.model.Knjiznica;
+import org.example.model.Automobil;
+import org.example.model.Kamion;
+import org.example.model.Vozilo;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        List<Clan> clanovi = new ArrayList<>();
-        List<Knjiga> knjigeUKnjiznici = new ArrayList<>();
-        List<Knjiga> posudeneKnjige = new ArrayList<>();
 
-        Knjiznica knjiznica = new Knjiznica(clanovi, knjigeUKnjiznici, posudeneKnjige);
-        Knjiga harryPotterKnjiga = new Knjiga("Harry Potter", "J. K. Rowling");
-        Knjiga hobbitKnjiga = new Knjiga("Hobit", "J.R.R. Tolkien");
+        List<Vozilo> vozila = new ArrayList<>();
+        Kamion kamion1 = new Kamion("Mercedes", "A54", "KR234DT", 34322, true);
+        Kamion kamion2 = new Kamion("Scania", "A34", "KR224DT", 34233, true);
+        Automobil automobil1 = new Automobil("Seat", "Leon", "ZG4324RT", 5, "Dizel");
+        Automobil automobil2 = new Automobil("Toyota", "Yaris", "ZG4321RT", 5, "Benzin");
+        vozila.add(kamion1);
+        vozila.add(kamion2);
+        vozila.add(automobil1);
+        vozila.add(automobil2);
 
-        knjiznica.dodajKnjiguUKnjiznicu(harryPotterKnjiga);
-        knjiznica.dodajKnjiguUKnjiznicu(hobbitKnjiga);
-
-        System.out.println("Trenutno stanje dostupnih knjiga u knjižnici je sljedeće: ");
-        knjiznica.ispiseSveKnjigeUKnjiznici(knjigeUKnjiznici);
-
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("--------------------------------------------------------");
-
-        System.out.println("Unesite podatke osobe: (ime, prezime, članski broj)");
-        System.out.println("Ime:");
-        String ime = scanner.nextLine();
-
-        System.out.println("Prezime:");
-        String prezime = scanner.nextLine();
-
-        System.out.println("Clanski broj:");
-        String clanskiBroj = scanner.nextLine();
-
-        Clan clan = new Clan(ime, prezime, clanskiBroj);
-        knjiznica.dodajClana(clan);
-
-        knjiznica.dodajKnjiguUPosudene(harryPotterKnjiga, clan.getClanskiBroj());
-        System.out.println("Trenutno stanje dostupnih knjiga u knjižnici je sljedeće: ");
-        knjiznica.ispiseSveKnjigeUKnjiznici(knjigeUKnjiznici);
-        System.out.println("--------------------------------------------------------");
-
-        System.out.println("Trenutno stanje pusuđenih knjiga je sljedeće: ");
-        knjiznica.ispiseSvePosudeneKnjige(posudeneKnjige);
-        System.out.println("--------------------------------------------------------");
-
-        knjiznica.dodajKnjiguUKnjiznicu(harryPotterKnjiga);
-        System.out.println("Trenutno stanje dostupnih knjiga u knjižnici je sljedeće: ");
-        knjiznica.ispiseSveKnjigeUKnjiznici(knjigeUKnjiznici);
-        System.out.println("--------------------------------------------------------");
-
-
-        knjiznica.ispiseSveKnjigeUDatoteku(knjigeUKnjiznici);
-        knjiznica.ispiseClanoveUDatoteku(clanovi);
+        System.out.println(pronadiVoziloPoRegistraciji("KR234DT", vozila));
+        ispisiSvaVozilaUVoznomParku(vozila);
 
     }
 
+    public static String pronadiVoziloPoRegistraciji(String registracija, List<Vozilo> vozila) {
+        for (int i = 0; i < vozila.size(); i++) {
+            if (vozila.get(i).getRegistracija().equals(registracija)) {
+                Vozilo vozilo = vozila.get(i);
+                return vozilo.vratiDetaljeVozila();
+            }
+        }
+        return "Vozilo ne postoji u sustavu";
+    }
 
+    public static void ispisiSvaVozilaUVoznomParku(List<Vozilo> vozila) {
+        for (int i = 0; i < vozila.size(); i++) {
+            System.out.println(vozila.get(i).vratiDetaljeVozila());
+        }
+    }
 }
-
 
 
