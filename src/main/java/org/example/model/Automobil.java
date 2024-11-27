@@ -1,36 +1,30 @@
 package org.example.model;
 
-public class Automobil extends Vozilo{
+import org.example.NeispravniPodaciException;
 
-    private Integer brojSjedala;
-    private String vrstaGoriva;
+public class Automobil extends Vozilo {
 
-    public Automobil(String marka, String model, String registracija, Integer brojSjedala, String vrstaGoriva) {
-        super(marka, model, registracija);
-        this.brojSjedala = brojSjedala;
-        this.vrstaGoriva = vrstaGoriva;
+    private Integer brojVrata;
+
+    public Automobil(String registarskiBroj, String marka, Integer godinaProizvodnja, Integer brojVrata) throws NeispravniPodaciException {
+        super(registarskiBroj, marka, godinaProizvodnja);
+        if (godinaProizvodnja < 0) {
+            throw new NeispravniPodaciException("Godina proizvodnje ne može biti negativna");
+        }
+        this.brojVrata = brojVrata;
     }
 
-    public Integer getBrojSjedala() {
-        return brojSjedala;
+    public Integer getBrojVrata() {
+        return brojVrata;
     }
 
-    public void setBrojSjedala(Integer brojSjedala) {
-        this.brojSjedala = brojSjedala;
-    }
-
-    public String getVrstaGoriva() {
-        return vrstaGoriva;
-    }
-
-    public void setVrstaGoriva(String vrstaGoriva) {
-        this.vrstaGoriva = vrstaGoriva;
+    public void setBrojVrata(Integer brojVrata) {
+        this.brojVrata = brojVrata;
     }
 
     @Override
-    public String vratiDetaljeVozila() {
-        return super.vratiDetaljeVozila();
+    public void prikaziPodatke() {
+        super.prikaziPodatke();
+        System.out.println(" " + this.getBrojVrata());
     }
-
-
 }
