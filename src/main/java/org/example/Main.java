@@ -1,41 +1,128 @@
 package org.example;
 
+import org.example.database.DatabaseService;
 
-import org.example.model.Automobil;
-import org.example.model.EvidencijaVozila;
-import org.example.model.Motocikl;
-import org.example.model.Vozilo;
+import java.sql.*;
+import java.util.Scanner;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
+        System.out.println(
+                "1 - novi grad" +
+                        "\n" + "2 - izmjena postojećeg grada " +
+                        "\n" + "3 - brisanje postojećeg grada" +
+                        "\n" + "4 - prikaz svih sortiranih po nazivu" +
+                        "\n" + "5 - kraj");
+
+        Connection connection = DatabaseService.createConnection();
+
+        try {
+            odaberiOpciju();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private static void insertGrad(String imeGrada) {
+        Connection connection = DatabaseService.createConnection();
+
+        try {
+            String query = "INSERT INTO GRAD (Naziv, DrzavaID) VALUES (?, ?)";
+            PreparedStatement statement = connection.prepareStatement(query);
+
+            statement.setString(1, imeGrada);
+            statement.setInt(2, 1);
+
+            statement.executeUpdate();
+
+            statement.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private static void updateGrad(int idGrada, String imeGrada) {
+        Connection connection = DatabaseService.createConnection();
+
+        try {
+            String query = "UPDATE GRAD SET Naziv = ? WHERE IDGrad = ?";
+            PreparedStatement statement = connection.prepareStatement(query);
+
+            statement.setInt(2, idGrada);
+            statement.setString(1, imeGrada);
+
+            statement.executeUpdate();
+
+            statement.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 
 
-        Automobil automobil1 = new Automobil("KR123DT", "Audi", 1920, 5);
-        Automobil automobil2 = new Automobil("ZG123DT", "BMW", 1940, 5);
-        Automobil automobil3 = new Automobil("VU123DT", "Range Rover", 1960, 5);
+    public static void odaberiOpciju() {
+        Scanner scanner = new Scanner(System.in);
 
+        int option;
+        do {
+            option = scanner.nextInt();
+            scanner.nextLine();
 
-        Motocikl motocikl = new Motocikl("KR122DT", "Ducati", 2020, "1000cc");
-        Motocikl motocikl2 = new Motocikl("ZG122DT", "BMW", 2024, "1000cc");
-        Motocikl motocikl3 = new Motocikl("VU122DT", "Suzuki", 1980, "1000cc");
+            switch (option) {
+                case 1:
+                    System.out.println("Upišite ime grada");
+                    String imeGrada = scanner.nextLine();
+                    insertGrad(imeGrada);
+                    break;
+                case 2:
+                    System.out.println("Unesite ID grada kojeg želite izmjeniti, te novi naziv grada");
 
-        motocikl2.prikaziPodatke();
+                    System.out.println("ID grada: ");
+                    int idGrada = scanner.nextInt();
 
-        List<Vozilo> listaVozila = new ArrayList<>();
-        listaVozila.add(automobil1);
-        listaVozila.add(automobil2);
-        listaVozila.add(automobil3);
-        listaVozila.add(motocikl);
-        listaVozila.add(motocikl2);
-        listaVozila.add(motocikl3);
-        EvidencijaVozila evidencijaVozila = new EvidencijaVozila(listaVozila);
+                    scanner.nextLine();
 
-        evidencijaVozila.spremiPodatkeUDatoteku(listaVozila);
-        evidencijaVozila.ucitajPodatkeIzDatoteke(new File("vozila.txt"));
+                    System.out.println("Naziv grada: ");
+                    String novoImeGrada = scanner.nextLine();
 
+                    updateGrad(idGrada, novoImeGrada);
+                    break;
+
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    break;
+                default:
+            }
+
+        } while (option != 5);
+        scanner.close();
     }
 }
