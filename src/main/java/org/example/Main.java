@@ -2,23 +2,20 @@ package org.example;
 
 import org.example.database.DatabaseService;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println(
-                "1 - novi grad" +
-                        "\n" + "2 - izmjena postojećeg grada " +
-                        "\n" + "3 - brisanje postojećeg grada" +
-                        "\n" + "4 - prikaz svih sortiranih po nazivu" +
-                        "\n" + "5 - kraj");
 
         Connection connection = DatabaseService.createConnection();
 
         try {
-            odaberiOpciju();
+            obrisiRacun(connection);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -32,97 +29,48 @@ public class Main {
         }
     }
 
-    private static void insertGrad(String imeGrada) {
-        Connection connection = DatabaseService.createConnection();
+    public static void obrisiRacun(Connection connection) throws SQLException {
 
-        try {
-            String query = "INSERT INTO GRAD (Naziv, DrzavaID) VALUES (?, ?)";
-            PreparedStatement statement = connection.prepareStatement(query);
-
-            statement.setString(1, imeGrada);
-            statement.setInt(2, 1);
-
-            statement.executeUpdate();
-
-            statement.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
-    private static void updateGrad(int idGrada, String imeGrada) {
-        Connection connection = DatabaseService.createConnection();
-
-        try {
-            String query = "UPDATE GRAD SET Naziv = ? WHERE IDGrad = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
-
-            statement.setInt(2, idGrada);
-            statement.setString(1, imeGrada);
-
-            statement.executeUpdate();
-
-            statement.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
-
-    public static void odaberiOpciju() {
         Scanner scanner = new Scanner(System.in);
+        connection.setAutoCommit(false);
 
-        int option;
-        do {
-            option = scanner.nextInt();
-            scanner.nextLine();
+        System.out.println("Odaberite IDRacun koji želite obrisati");
 
-            switch (option) {
-                case 1:
-                    System.out.println("Upišite ime grada");
-                    String imeGrada = scanner.nextLine();
-                    insertGrad(imeGrada);
-                    break;
-                case 2:
-                    System.out.println("Unesite ID grada kojeg želite izmjeniti, te novi naziv grada");
+        int idRacun = scanner.nextInt();
 
-                    System.out.println("ID grada: ");
-                    int idGrada = scanner.nextInt();
+        System.out.println("Odabrali ste idRacuna " + idRacun);
+        try {
+            String deleteQuery = "DELETE FROM Stavka WHERE RacunID = ?";
+            PreparedStatement deleteStmt = connection.prepareStatement(deleteQuery);
+            deleteStmt.setInt(1, idRacun);
+            deleteStmt.executeUpdate();
 
-                    scanner.nextLine();
+            String deleteQueryRacun = "DELETE FROM Racun WHERE IDRacun = ?";
+            PreparedStatement deleteStmtRacun = connection.prepareStatement(deleteQueryRacun);
+            deleteStmtRacun.setInt(1, idRacun);
+            deleteStmtRacun.executeUpdate();
 
-                    System.out.println("Naziv grada: ");
-                    String novoImeGrada = scanner.nextLine();
+            String selectQuery = "SELECT * FROM Stavka WHERE RacunID = ?";
+            PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+            selectStmt.setInt(1, idRacun);
+            ResultSet resultSet = selectStmt.executeQuery();
 
-                    updateGrad(idGrada, novoImeGrada);
-                    break;
-
-                case 3:
-                    break;
-                case 4:
-                    break;
-                case 5:
-                    break;
-                default:
+            if (!resultSet.next()) {
+                System.out.println("Nema stavke s tim računom");
+            } else {
+                while (resultSet.next()) {
+                    int idStavka = resultSet.getInt("idStavka");
+                    System.out.println("idStavka: " + idStavka);
+                }
             }
 
-        } while (option != 5);
-        scanner.close();
+            deleteStmt.close();
+            selectStmt.close();
+
+            connection.commit();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            connection.rollback();
+        }
     }
 }
